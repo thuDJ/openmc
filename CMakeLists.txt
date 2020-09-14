@@ -13,12 +13,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 # Command line options
 #===============================================================================
 
-option(openmp   "Enable shared-memory parallelism with OpenMP"   ON)
+option(openmp   "Enable shared-memory parallelism with OpenMP"   OFF)
 option(profile  "Compile with profiling flags"                   OFF)
-option(debug    "Compile with debug flags"                       OFF)
+option(debug    "Compile with debug flags"                       ON)
 option(optimize "Turn on all compiler optimization flags"        OFF)
 option(coverage "Compile with coverage analysis flags"           OFF)
-option(dagmc    "Enable support for DAGMC (CAD) geometry"        OFF)
+option(dagmc    "Enable support for DAGMC (CAD) geometry"        ON)
 
 #===============================================================================
 # MPI for distributed-memory parallelism
@@ -86,10 +86,10 @@ endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-list(APPEND cxxflags -O2)
+list(APPEND cxxflags -O0)
 if(debug)
   list(REMOVE_ITEM cxxflags -O2)
-  list(APPEND cxxflags -g -O0)
+  list(APPEND cxxflags -O0)
 endif()
 if(profile)
   list(APPEND cxxflags -g -fno-omit-frame-pointer)
