@@ -176,7 +176,7 @@ void load_dagmc_geometry()
   MB_CHK_ERR_CONT(rval);
 
   // parse model metadata
-  dagmcMetaData DMD(model::DAG, false, false);
+  dagmcMetaData DMD(model::DAG, false);
   DMD.load_property_data();
 
   std::vector<std::string> keywords {"temp"};
