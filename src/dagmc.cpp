@@ -294,22 +294,31 @@ void load_dagmc_geometry()
     s->dagmc_ptr_ = model::DAG;
 
     // set BCs
-    std::string bc_value = DMD.get_surface_property("boundary", surf_handle);
-    to_lower(bc_value);
-    if (bc_value.empty() || bc_value == "transmit" || bc_value == "transmission") {
-      // Leave the bc_ a nullptr
-    } else if (bc_value == "vacuum") {
-      s->bc_ = std::make_shared<VacuumBC>();
-    } else if (bc_value == "reflective" || bc_value == "reflect" || bc_value == "reflecting") {
-      s->bc_ = std::make_shared<ReflectiveBC>();
-    } else if (bc_value == "white") {
-      fatal_error("White boundary condition not supported in DAGMC.");
-    } else if (bc_value == "periodic") {
-      fatal_error("Periodic boundary condition not supported in DAGMC.");
-    } else {
-      fatal_error(fmt::format("Unknown boundary condition \"{}\" specified "
-        "on surface {}", bc_value, s->id_));
-    }
+    std::string bc_value; // = DMD.get_surface_property("boundary", surf_handle);
+
+      if (model::DAG->has_prop(surf_handle, "boundary")) {
+          rval = model::DAG->prop_value(surf_handle, "boundary", bc_value);
+          MB_CHK_ERR_CONT(rval);
+
+          to_lower(bc_value);
+          if (bc_value.empty() || bc_value == "transmit" || bc_value == "transmission") {
+              // Leave the bc_ a nullptr
+          } else if (bc_value == "vacuum") {
+              s->bc_ = std::make_shared<VacuumBC>();
+          } else if (bc_value == "reflective" || bc_value == "reflect" || bc_value == "reflecting") {
+              s->bc_ = std::make_shared<ReflectiveBC>();
+          } else if (bc_value == "white") {
+              fatal_error("White boundary condition not supported in DAGMC.");
+          } else if (bc_value == "periodic") {
+              fatal_error("Periodic boundary condition not supported in DAGMC.");
+          } else {
+              fatal_error(fmt::format("Unknown boundary condition \"{}\" specified "
+                                      "on surface {}", bc_value, s->id_));
+          }
+      } else{
+          // if no condition is found, set to transmit
+      }
+
 
     // graveyard check
     moab::Range parent_vols;
